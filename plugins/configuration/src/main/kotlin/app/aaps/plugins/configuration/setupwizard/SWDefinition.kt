@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import app.aaps.core.data.configuration.Constants
@@ -190,24 +191,36 @@ class SWDefinition @Inject constructor(
             }
 
     private val screenPermissionBt
-        get() = SWScreen(injector, R.string.permission)
-            .skippable(false)
-            .add(SWInfoText(injector).label(rh.gs(R.string.need_location_permission)))
-            .add(SWBreak(injector))
-            .add(SWButton(injector)
-                     .text(R.string.askforpermission)
-                     .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) }
-                     .action { androidPermission.askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) })
-            .add(SWBreak(injector))
-            .add(SWInfoText(injector).label(rh.gs(R.string.need_background_location_permission)))
-            .add(SWBreak(injector))
-            .add(SWButton(injector)
-                     .text(R.string.askforpermission)
-                     .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
-                     .action { androidPermission.askForPermission(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) })
-            .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) || androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
-            .validator { !androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) && !androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
-
+        get() =
+            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                SWScreen(injector, R.string.permission)
+                    .skippable(false)
+                    .add(SWInfoText(injector).label(rh.gs(R.string.need_location_permission)))
+                    .add(SWBreak(injector))
+                    .add(SWButton(injector)
+                             .text(R.string.askforpermission)
+                             .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) }
+                             .action { androidPermission.askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) })
+                    .add(SWBreak(injector))
+                    .add(SWInfoText(injector).label(rh.gs(R.string.need_background_location_permission)))
+                    .add(SWBreak(injector))
+                    .add(SWButton(injector)
+                             .text(R.string.askforpermission)
+                             .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
+                             .action { androidPermission.askForPermission(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) })
+                    .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) || androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
+                    .validator { !androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) && !androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
+            }else{
+                SWScreen(injector, R.string.permission)
+                    .skippable(false)
+                    .add(SWInfoText(injector).label(rh.gs(R.string.need_location_permission)))
+                    .add(SWBreak(injector))
+                    .add(SWButton(injector)
+                             .text(R.string.askforpermission)
+                             .visibility { androidPermission.permissionNotGranted(activity, Manifest.permission.ACCESS_FINE_LOCATION) }
+                             .action { androidPermission.askForPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) })
+                    .add(SWBreak(injector))
+            }
     private val screenImport
         get() = SWScreen(injector, R.string.import_setting)
             .add(SWInfoText(injector).label(R.string.storedsettingsfound))

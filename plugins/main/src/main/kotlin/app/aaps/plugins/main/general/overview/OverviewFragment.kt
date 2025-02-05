@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.TypedValue
+import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -185,9 +186,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
         // pre-process landscape mode
         //check screen width
-        val wm = requireActivity().windowManager.currentWindowMetrics
-        val screenWidth = wm.bounds.width()
-        val screenHeight = wm.bounds.height()
+        val display: Display = requireActivity().windowManager.getDefaultDisplay()
+        val screenWidth = display.width
+        val screenHeight = display.height
+        //val wm = requireActivity().windowManager.currentWindowMetrics
+        //val screenWidth = wm.bounds.width()
+        //val screenHeight = wm.bounds.height()
         smallWidth = screenWidth <= Constants.SMALL_WIDTH
         smallHeight = screenHeight <= Constants.SMALL_HEIGHT
         val landscape = screenHeight < screenWidth
@@ -556,7 +560,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             _binding ?: return@runOnUiThread
             if (showAcceptButton && pump.isInitialized() && !pump.isSuspended() && (loop as PluginBase).isEnabled()) {
                 binding.buttonsLayout.acceptTempButton.visibility = View.VISIBLE
-                binding.buttonsLayout.acceptTempButton.text = "${rh.gs(R.string.set_basal_question)}\n${lastRun.constraintsProcessed?.resultAsString()}"
+                binding.buttonsLayout.acceptTempButton.text = "${rh.gs(R.string.set_basal_question)}\n${lastRun?.constraintsProcessed?.resultAsString()}"
             } else {
                 binding.buttonsLayout.acceptTempButton.visibility = View.GONE
             }
@@ -641,7 +645,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val closedLoopEnabled = constraintChecker.isClosedLoopAllowed()
 
         fun apsModeSetA11yLabel(stringRes: Int) {
-            binding.infoLayout.apsMode.stateDescription = rh.gs(stringRes)
+            //binding.infoLayout.apsMode.stateDescription = rh.gs(stringRes)
         }
 
         runOnUiThread {

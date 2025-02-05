@@ -211,6 +211,9 @@ class DataLayerListenerServiceWear : WearableListenerService() {
     private var transcriptionNodeId: String? = null
 
     private fun updateTranscriptionCapability() {
+        if (true) {
+            return
+        }
         val capabilityInfo: CapabilityInfo = Tasks.await(
             capabilityClient.getCapability(PHONE_CAPABILITY, CapabilityClient.FILTER_REACHABLE)
         )
